@@ -10,7 +10,7 @@ export function pageMeta({
   title,
   description,
   path,
-  image = "/images/van-ramp.jpg",
+  image = "/images/brand/van-parade.jpg",
   absoluteTitle = false,
 }: {
   title: string;
@@ -31,7 +31,7 @@ export function pageMeta({
       siteName: site.name,
       locale: "en_NZ",
       type: "website",
-      images: [{ url: image, width: 1536, height: 1024, alt: site.name }],
+      images: [{ url: image, alt: site.name }],
     },
     twitter: { card: "summary_large_image", title: ogTitle, description, images: [image] },
   };

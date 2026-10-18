@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Old AI media and original photos, kept out of the deployed site
+/_unused-ai-media

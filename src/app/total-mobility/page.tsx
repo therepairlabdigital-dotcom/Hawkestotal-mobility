@@ -1,52 +1,51 @@
 import type { Metadata } from "next";
+import { FareSplit } from "@/components/sections";
+import { CallButtons, ContactBand, Container, Faqs, PageHero, SectionIntro } from "@/components/ui";
 import { JsonLd, pageMeta } from "@/lib/seo";
-import { Icon } from "@/components/icons";
-import { CtaBand } from "@/components/sections";
-import { CallButtons, Container, Faqs, PageHero, SectionHeading } from "@/components/ui";
+import { photos } from "@/lib/site";
 
 export const metadata: Metadata = pageMeta({
   title: "Total Mobility Card Transport",
   description:
     "How the Total Mobility scheme works in Hawke’s Bay, who is eligible, and how to use your Total Mobility card with Hawke’s Bay Total Mobility. Call 027 352 1635.",
   path: "/total-mobility",
-  image: "/images/van-wheelchair.jpg",
+  image: photos.companionRide.src,
 });
 
 const steps = [
-  {
-    title: "Book your trip",
-    body: "Call or text us and let us know you’re a Total Mobility cardholder when you book.",
-  },
-  {
-    title: "Show your card",
-    body: "Have your Total Mobility card with you and show it to your driver at the start of the trip.",
-  },
-  {
-    title: "Pay your share",
-    body: "The scheme covers part of the fare, and you pay the rest. We’ll let you know what to expect when you book.",
-  },
+  { title: "Tell us when you book", body: "Call or text and mention you’re a Total Mobility cardholder." },
+  { title: "Bring your card", body: "Show it to the driver at the start of the trip. We swipe it on the meter." },
+  { title: "Pay your share", body: "The scheme pays 75% of the fare, up to the regional cap. You pay the rest by EFTPOS or cash." },
+];
+
+const payments = [
+  { title: "EFTPOS and cards", body: "Pay your share in the van by EFTPOS, contactless debit or credit card." },
+  { title: "Cash", body: "Cash is always fine. Pay the driver directly." },
+  { title: "ACC", body: "Recovering from an accident or surgery? We bill ACC directly with your approved claim number." },
+  { title: "Health NZ travel vouchers", body: "Approved National Travel Assistance (NTA) vouchers for specialist and outpatient appointments." },
 ];
 
 const faqs = [
   {
     q: "What is Total Mobility?",
-    a: "Total Mobility is a New Zealand government-funded scheme that helps people with long-term impairments get around by giving them a discount on the cost of trips with approved transport providers.",
+    a: "Total Mobility is a government-funded scheme that helps people with long-term impairments get around, by paying part of the cost of trips with approved transport providers.",
   },
   {
-    q: "Who can get a Total Mobility card?",
-    a: "The scheme is for people with a long-term impairment that stops them using public transport safely or independently. Eligibility is decided through an assessment with an approved assessment agency.",
+    q: "Who can get a card?",
+    a: "People with a long-term impairment that stops them using public transport safely or on their own. Eligibility is decided by an assessment with an approved agency.",
   },
   {
     q: "How do I apply?",
-    a: "Contact an approved assessment agency in Hawke’s Bay to arrange an assessment. Hawke’s Bay Regional Council runs the scheme locally and can point you to an agency.",
+    a: "Contact an approved assessment agency in Hawke’s Bay, such as Age Concern, the Disability Resource Centre or Blind Low Vision NZ. Hawke’s Bay Regional Council runs the scheme locally and can point you to one.",
   },
   {
     q: "How much is the discount?",
-    a: "The discount and any maximum fare are set by the scheme and can change. Check the current rates with Hawke’s Bay Regional Council, or ask us when you book.",
+    a: "In Hawke’s Bay the scheme pays 75% of your fare, up to the regional maximum per trip. You pay the remaining 25%, plus anything over the cap.",
   },
+  { q: "Can I use my card if I travel in my wheelchair?", a: "Yes. You stay in your own chair, and the trip is subsidised just the same." },
   {
-    q: "Can I use my card in a wheelchair?",
-    a: "Yes. Our vans are wheelchair accessible, so you can stay seated in your own chair for the whole trip.",
+    q: "Do you accept ACC or Health NZ travel vouchers?",
+    a: "Yes. We accept approved ACC transport claims and Health NZ (Te Whatu Ora) National Travel Assistance vouchers.",
   },
 ];
 
@@ -61,78 +60,79 @@ export default function TotalMobilityPage() {
     <>
       <JsonLd data={faqLd} />
       <PageHero
-        eyebrow="Total Mobility"
-        title="Travel with your Total Mobility card."
-        intro="The Total Mobility scheme helps people with long-term impairments get around by reducing the cost of their trips. Tell us you’re a cardholder when you book, and we’ll take care of the rest."
+        title="Total Mobility card transport in Hawke’s Bay."
+        intro={
+          <p>
+            We’re an approved provider for Hawke’s Bay Regional Council’s Total Mobility scheme. With a card, the scheme pays 75% of your fare, up to the regional
+            cap.
+          </p>
+        }
         crumbs={[{ label: "Home", href: "/" }, { label: "Total Mobility" }]}
         path="/total-mobility"
-        image={{
-          src: "/images/van-wheelchair.jpg",
-          alt: "Driver guiding a man in a wheelchair onto the rear ramp of the Hawke’s Bay Total Mobility van",
-        }}
+        photo={photos.companionRide}
       >
         <CallButtons />
       </PageHero>
 
-      <section className="bg-white py-14 lg:py-24">
-        <Container>
-          <SectionHeading
-            eyebrow="Using your card with us"
-            title="Three easy steps."
-            intro="Using your Total Mobility card is simple, whether it’s your first trip or your hundredth."
-            center
-            className="max-w-[720px]"
-          />
-          <ol className="mt-10 grid gap-4 md:grid-cols-3 lg:mt-14 lg:gap-6">
-            {steps.map((s, i) => (
-              <li key={s.title} className="flex gap-4 rounded-3xl bg-mist p-5 md:flex-col md:p-8">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand font-display text-lg font-extrabold text-white md:size-13 md:text-[22px]">
-                  {i + 1}
-                </span>
-                <div>
-                  <h3 className="font-display text-lg font-bold text-navy md:text-[22px]">{s.title}</h3>
-                  <p className="mt-1 text-[15px] leading-relaxed text-ink md:mt-3 md:text-[17px]">{s.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+      <section className="bg-white py-20 lg:py-28">
+        <Container className="grid gap-12 lg:grid-cols-[1fr_480px] lg:items-start lg:gap-16">
+          <div>
+            <SectionIntro title="Three steps with us." />
+            <ol className="mt-10 space-y-5">
+              {steps.map((s, i) => (
+                <li key={s.title} className="card flex gap-5 p-6">
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-ink font-display text-[17px] text-white">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <h3 className="font-display text-[22px] font-normal tracking-[-0.02em] text-ink">{s.title}</h3>
+                    <p className="mt-2.5 text-[17px] leading-relaxed text-muted">{s.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div className="rounded-[20px] bg-navy p-3 lg:mt-24">
+            <FareSplit />
+          </div>
         </Container>
       </section>
 
-      <section className="bg-mist py-14 lg:py-24">
+      <section className="bg-tint py-20 lg:py-28">
         <Container className="grid gap-6 lg:grid-cols-2">
-          <div className="rounded-3xl bg-white p-6 shadow-card lg:p-10">
-            <span className="flex size-14 items-center justify-center rounded-2xl bg-sky text-brand">
-              <Icon name="access" size={28} />
-            </span>
-            <h2 className="mt-6 font-display text-2xl font-extrabold text-navy lg:text-[28px]">Who the scheme is for</h2>
-            <p className="mt-4 text-[17px] leading-relaxed">
-              Total Mobility is for people with a long-term impairment that makes it hard to use buses and other public
-              transport safely or on their own. That can include physical, sensory, intellectual and psychological
-              impairments.
-            </p>
+          <div className="rounded-[var(--radius-card)] bg-white p-7 lg:p-9">
+            <SectionIntro title="Who the scheme is for.">
+              <p>
+                Total Mobility is for people with a permanent or long-term impairment that makes it hard to use the bus safely on their own. That can be a physical,
+                sensory, neurological or age-related condition.
+              </p>
+              <p className="mt-4">
+                Cards are issued after an assessment with an approved local agency. Hawke’s Bay Regional Council runs the scheme across Napier and Hastings.
+              </p>
+            </SectionIntro>
           </div>
-          <div className="rounded-3xl bg-white p-6 shadow-card lg:p-10">
-            <span className="flex size-14 items-center justify-center rounded-2xl bg-sky text-brand">
-              <Icon name="shield" size={28} />
-            </span>
-            <h2 className="mt-6 font-display text-2xl font-extrabold text-navy lg:text-[28px]">How to get a card</h2>
-            <p className="mt-4 text-[17px] leading-relaxed">
-              Cards are issued after an assessment with an approved assessment agency. In our region the scheme is run by
-              Hawke’s Bay Regional Council, who can tell you which agencies do assessments and the current fare rules.
-            </p>
+          <div className="rounded-[var(--radius-card)] bg-white p-7 lg:p-9">
+            <SectionIntro title="Ways to pay your share." />
+            <dl className="mt-6 divide-y divide-line">
+              {payments.map((p) => (
+                <div key={p.title} className="py-4 first:pt-0 last:pb-0">
+                  <dt className="font-semibold text-ink">{p.title}</dt>
+                  <dd className="mt-1 text-[17px] leading-relaxed text-muted">{p.body}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </Container>
       </section>
 
-      <section className="bg-white py-14 lg:py-24">
-        <Container className="grid gap-10 lg:grid-cols-[400px_1fr] lg:gap-16">
-          <SectionHeading eyebrow="Questions" title="Total Mobility FAQs." />
+      <section className="bg-white py-20 lg:py-28">
+        <Container className="grid gap-10 lg:grid-cols-[360px_1fr] lg:gap-16">
+          <SectionIntro title="About the scheme." />
           <Faqs items={faqs} />
         </Container>
       </section>
 
-      <CtaBand eyebrow="Cardholders welcome" title="Ready to book your trip?" intro="Call or text us, mention your Total Mobility card, and tell us where you need to go." />
+      <ContactBand title="Ready to book?" intro="Call or text us, mention your Total Mobility card, and tell us where you need to go." />
     </>
   );
 }

@@ -1,19 +1,14 @@
 import type { Metadata } from "next";
-import { Atkinson_Hyperlegible_Next, Montserrat } from "next/font/google";
+import { Geist } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { MobileCallBar } from "@/components/MobileCallBar";
 import { businessId, JsonLd } from "@/lib/seo";
-import { site } from "@/lib/site";
+import { services, site } from "@/lib/site";
 import "./globals.css";
 
-// Designed for low-vision readers — a good fit for an accessibility-focused audience.
-const body = Atkinson_Hyperlegible_Next({ variable: "--font-body", subsets: ["latin"] });
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
-});
+// One family for everything, like a print identity. Regular weight for headings, medium for UI.
+const display = Geist({ variable: "--font-display-face", subsets: ["latin"], weight: ["400", "500", "600"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -35,7 +30,7 @@ const jsonLd = {
   description: "Door-to-door wheelchair and mobility transport across Hawke’s Bay.",
   url: site.url,
   telephone: "+64 27 352 1635",
-  image: `${site.url}/images/van-ramp.jpg`,
+  image: [`${site.url}/images/photos/van-marine-parade-apartments.jpg`, `${site.url}/images/photos/van-war-memorial-centre.jpg`],
   logo: `${site.url}/images/logo-full.png`,
   slogan: "Honest Reliable Service",
   address: { "@type": "PostalAddress", addressRegion: "Hawke’s Bay", addressCountry: "NZ" },
@@ -43,22 +38,48 @@ const jsonLd = {
     ...["Napier", "Hastings", "Havelock North", "Taradale"].map((name) => ({ "@type": "City", name })),
     { "@type": "AdministrativeArea", name: "Hawke’s Bay" },
   ],
+  email: site.email,
+  openingHoursSpecification: {
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    opens: "07:00",
+    closes: "19:00",
+  },
+  paymentAccepted: "Cash, EFTPOS, Credit Card, Total Mobility card, ACC",
+  currenciesAccepted: "NZD",
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: "+64 27 352 1635",
+    contactType: "reservations",
+    areaServed: "NZ",
+    availableLanguage: "English",
+  },
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Accessible transport services",
+    itemListElement: services.map((s) => ({
+      "@type": "Offer",
+      itemOffered: { "@type": "Service", name: s.title, url: `${site.url}/services/${s.slug}` },
+    })),
+  },
   knowsAbout: ["Wheelchair transport", "Accessible transport", "Total Mobility scheme", "Medical appointment transport"],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-NZ" className={`${body.variable} ${montserrat.variable} antialiased`}>
+    <html lang="en-NZ" className={`${display.variable} antialiased`}>
       <body className="pb-[76px] font-sans lg:pb-0">
         <JsonLd data={jsonLd} />
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-md focus:bg-navy focus:text-white focus:px-5 focus:py-3 focus:font-bold focus:shadow-2xl focus:ring-4 focus:ring-brand focus:outline-none"
         >
-          Skip to content
+          Skip to main content
         </a>
         <Header />
-        <main id="main">{children}</main>
+        <main id="main" className="pt-[108px]">
+          {children}
+        </main>
         <Footer />
         <MobileCallBar />
       </body>

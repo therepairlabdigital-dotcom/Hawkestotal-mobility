@@ -1,110 +1,109 @@
 import type { Metadata } from "next";
-import { pageMeta } from "@/lib/seo";
 import Image from "next/image";
+import { pageMeta } from "@/lib/seo";
+import { photos } from "@/lib/site";
 import { Icon, type IconName } from "@/components/icons";
-import { AboutSplit, CtaBand } from "@/components/sections";
-import { CallButtons, Container, PageHero, SectionHeading } from "@/components/ui";
+import { RouteLine, TotalMobilityBand } from "@/components/sections";
+import { CallButtons, ContactBand, Container, PageHero, SectionIntro } from "@/components/ui";
 
 export const metadata: Metadata = pageMeta({
-  title: "About Us — Accessible Transport",
+  title: "About Our Local Wheelchair Transport",
   description:
-    "Hawke’s Bay Total Mobility is a local, door-to-door accessible transport service for Napier, Hastings and Hawke’s Bay. Honest, reliable service. Call 027 352 1635.",
+    "Locally run, door-to-door wheelchair and mobility transport across Napier, Hastings and wider Hawke's Bay. Total Mobility cards welcome. Call 027 352 1635.",
   path: "/about",
+  image: photos.vanMemorial.src,
 });
 
-const values: { icon: IconName; title: string; body: string }[] = [
-  {
-    icon: "shield",
-    title: "Honest",
-    body: "Clear, upfront communication about your trip, your pickup time and what to expect — no surprises.",
-  },
-  {
-    icon: "check",
-    title: "Reliable",
-    body: "We turn up when we say we will, so you can count on getting to the things that matter.",
-  },
-  {
-    icon: "heart",
-    title: "Service",
-    body: "Patient, respectful help from your door to your destination, treating every passenger with dignity.",
-  },
-];
-
-const expect = [
-  "A friendly driver who helps you from your door to the van",
-  "Wheelchairs secured safely with floor restraints and seatbelts",
-  "No rushing — we take the time you need getting in and out",
-  "Help with bags, walkers and mobility aids",
-  "A clean, comfortable, wheelchair-accessible van",
-  "Easy booking by phone or text",
+const onEveryTrip: { icon: IconName; title: string; body: string }[] = [
+  { icon: "heart", title: "We come to the door", body: "Not the kerb. We help with your coat, walker or bags, and walk you in at the other end." },
+  { icon: "access", title: "Your chair is secured properly", body: "Four-point floor restraints plus a lap and sash seatbelt. You shouldn’t feel the chair move." },
+  { icon: "clock", title: "Nobody rushes you", body: "We leave enough time between pickups that you can take getting in and out slowly." },
+  { icon: "shield", title: "Licensed drivers", body: "NZ Transport Agency passenger (P) endorsements, which include police vetting." },
+  { icon: "users", title: "Someone can come too", body: "A family member, carer or assistance dog travels with you at no extra charge." },
+  { icon: "check", title: "Easy to pay", body: "EFTPOS or cash in the van. Total Mobility cards swiped on the meter. ACC billed directly." },
 ];
 
 export default function AboutPage() {
   return (
     <>
       <PageHero
-        eyebrow="About us"
-        title="Local, accessible transport — done properly."
-        intro="Hawke’s Bay Total Mobility helps people who find it hard to get around keep living independently. We provide door-to-door transport in wheelchair-accessible vans across Napier, Hastings and wider Hawke’s Bay."
+        title="Local wheelchair transport, run by people who know the Bay."
+        intro={
+          <p>
+            Getting to the doctor, the shops or your family shouldn’t be a battle. We drive wheelchair-accessible vans around Napier, Hastings and the wider Bay,
+            and we take the time to help you properly.
+          </p>
+        }
         crumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
         path="/about"
-        image={{ src: "/images/van-ramp.jpg", alt: "Driver helping a woman in a wheelchair up the ramp of the Hawke’s Bay Total Mobility van" }}
+        photo={photos.brandDoor}
       >
         <CallButtons />
       </PageHero>
 
-      <section className="bg-white py-14 lg:py-24">
+      <section className="bg-white py-20 lg:py-28">
         <Container>
-          <SectionHeading
-            eyebrow="What we stand for"
-            title="Honest. Reliable. Service."
-            intro="Three words on every one of our vans — and the promise behind every trip."
-            center
-            className="max-w-[720px]"
-          />
-          <ul className="mt-10 grid gap-4 md:grid-cols-3 lg:mt-14 lg:gap-6">
-            {values.map((v) => (
-              <li key={v.title} className="rounded-3xl bg-mist p-6 md:p-8">
-                <span className="flex size-14 items-center justify-center rounded-2xl bg-brand text-white">
-                  <Icon name={v.icon} size={26} strokeWidth={2.5} />
+          <SectionIntro title="What you can expect from us." />
+          <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {onEveryTrip.map((t) => (
+              <li key={t.title} className="card p-7">
+                <span className="flex size-11 items-center justify-center rounded-full bg-ink/5 text-ink">
+                  <Icon name={t.icon} size={24} />
                 </span>
-                <h3 className="mt-5 font-display text-2xl font-extrabold text-navy">{v.title}</h3>
-                <p className="mt-3 text-[17px] leading-relaxed">{v.body}</p>
+                <h3 className="mt-5 font-display text-[22px] font-normal tracking-[-0.02em] text-ink">{t.title}</h3>
+                <p className="mt-2 text-[17px] leading-relaxed text-muted">{t.body}</p>
               </li>
             ))}
           </ul>
         </Container>
       </section>
 
-      <AboutSplit cta={false} />
-
-      <section className="bg-white py-14 lg:py-24">
-        <Container className="grid items-center gap-10 lg:grid-cols-[1fr_560px] lg:gap-20">
-          <div>
-            <SectionHeading eyebrow="Every trip" title="What you can expect." />
-            <ul className="mt-8 grid gap-4 sm:grid-cols-2">
-              {expect.map((e) => (
-                <li key={e} className="flex gap-3 text-[17px] leading-relaxed">
-                  <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-brand text-white">
-                    <Icon name="check" size={14} strokeWidth={3} />
-                  </span>
-                  {e}
-                </li>
-              ))}
-            </ul>
-          </div>
+      <section className="bg-tint py-20 lg:py-28">
+        <Container className="grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
           <Image
-            src="/images/van-driving.jpg"
-            alt="The Hawke’s Bay Total Mobility van driving along a coastal road"
+            src={photos.brandRamp.src}
+            alt={photos.brandRamp.alt}
             width={1536}
             height={1024}
             sizes="(min-width: 1024px) 560px, 100vw"
-            className="aspect-[4/3] w-full rounded-3xl object-cover lg:rounded-[32px]"
+            className="aspect-[4/3] w-full rounded-[var(--radius-card)] object-cover"
+          />
+          <div>
+            <SectionIntro title="You talk to us, not a call centre.">
+              <p>
+                We know where the covered drop-off is at the Napier Health Centre, which hospital entrance is closest to your clinic, and where to park at the rest
+                homes in Havelock North.
+              </p>
+              <p className="mt-4">
+                If you travel with us regularly, for dialysis, physio or a weekly club, you’ll usually see the same faces, and we’ll remember how you like your
+                chair set up.
+              </p>
+            </SectionIntro>
+          </div>
+        </Container>
+      </section>
+
+      <section className="bg-white py-20 lg:py-28">
+        <Container className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <SectionIntro title="Napier, Hastings and everywhere between." />
+            <div className="mt-10">
+              <RouteLine />
+            </div>
+          </div>
+          <Image
+            src={photos.fleetFlag.src}
+            alt={photos.fleetFlag.alt}
+            width={2000}
+            height={1333}
+            sizes="(min-width: 1024px) 560px, 100vw"
+            className="aspect-[4/5] w-full rounded-[var(--radius-card)] object-cover lg:aspect-auto lg:h-full"
           />
         </Container>
       </section>
 
-      <CtaBand />
+      <TotalMobilityBand />
+      <ContactBand />
     </>
   );
 }

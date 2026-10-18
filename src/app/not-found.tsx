@@ -1,22 +1,16 @@
 import Link from "next/link";
-import { CallButtons, Container, SectionHeading } from "@/components/ui";
+import { CallButtons, Container, Heading } from "@/components/ui";
 
 export default function NotFound() {
   return (
-    <section className="bg-mist py-20 lg:py-32">
-      <Container>
-        <SectionHeading
-          as="h1"
-          eyebrow="Page not found"
-          title="Sorry, we couldn’t find that page."
-          intro="The page may have moved. You can head back to the home page, or call us and we’ll help you straight away."
-          center
-          className="max-w-[720px]"
-        />
-        <CallButtons className="mt-10 justify-center" />
-        <p className="mt-6 text-center">
+    <section className="bg-tint py-20 lg:py-28">
+      <Container className="max-w-[720px]">
+        <Heading as="h1">Sorry, we couldn’t find that page.</Heading>
+        <p className="mt-5 text-[18px] leading-relaxed">It may have moved. Head back to the home page, or call us and we’ll help straight away.</p>
+        <CallButtons className="mt-8" onNavy={false} />
+        <p className="mt-6">
           <Link href="/" className="font-semibold text-brand hover:underline">
-            Back to home
+            Back to the home page
           </Link>
         </p>
       </Container>

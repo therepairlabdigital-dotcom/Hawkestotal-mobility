@@ -21,7 +21,7 @@ const sections = [
   },
   {
     h: "This website",
-    p: "The online booking form does not store your details on this website. It prepares a text message on your own phone, which you choose to send to us.",
+    p: "The online booking form does not store your details on this website. It prepares a text message or email on your own device, which you choose to send to us.",
   },
   {
     h: "Your rights",
@@ -33,23 +33,22 @@ export default function PrivacyPage() {
   return (
     <>
       <PageHero
-        eyebrow="Privacy"
-        title="Your privacy."
-        intro="We only collect what we need to get you where you’re going, and we keep it safe."
+        title="Privacy"
+        intro={<p>We only collect what we need to get you where you’re going, and we keep it safe.</p>}
         crumbs={[{ label: "Home", href: "/" }, { label: "Privacy" }]}
         path="/privacy"
       />
-      <section className="bg-white py-14 lg:py-20">
+      <section className="bg-white py-20 lg:py-28">
         <Container className="max-w-[820px] space-y-10">
           {sections.map((s) => (
             <div key={s.h}>
-              <h2 className="font-display text-2xl font-extrabold text-navy">{s.h}</h2>
+              <h2 className="font-display text-[26px] font-normal tracking-[-0.02em] text-ink">{s.h}</h2>
               <p className="mt-3 text-[17px] leading-relaxed">{s.p}</p>
             </div>
           ))}
           <p className="text-[17px]">
             Questions? Call or text{" "}
-            <a href={site.phoneHref} className="font-semibold text-brand hover:underline">
+            <a href={site.phoneHref} className="font-semibold text-brand underline underline-offset-4">
               {site.phoneDisplay}
             </a>
             .

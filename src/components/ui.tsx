@@ -2,35 +2,38 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { breadcrumbLd, JsonLd } from "@/lib/seo";
+import { photos, site } from "@/lib/site";
 import { Icon, type IconName } from "./icons";
 
 const variants = {
-  primary: "bg-brand text-white shadow-[0_8px_20px_rgb(42_102_204/0.28)] hover:bg-brand-dark hover:shadow-[0_10px_24px_rgb(42_102_204/0.36)]",
-  outline: "bg-white text-navy ring-2 ring-inset ring-navy hover:bg-navy hover:text-white",
-  white: "bg-white text-navy hover:bg-sky",
+  primary: { pill: "bg-brand text-white hover:bg-brand-dark", dot: "bg-white text-brand" },
+  white: { pill: "bg-white text-ink hover:bg-tint", dot: "bg-ink text-white" },
+  dark: { pill: "bg-navy text-white hover:bg-navy-2", dot: "bg-white text-ink" },
+  outline: { pill: "bg-transparent text-ink ring-1 ring-inset ring-ink/20 hover:ring-ink/50", dot: "bg-ink text-white" },
 };
 
+/** Pill button with a round arrow (or icon) at the end. Tap target stays at least 52px tall. */
 export function Button({
   href,
   children,
   variant = "primary",
-  icon,
-  trailing,
+  icon = "arrow",
   className = "",
 }: {
   href: string;
   children: ReactNode;
   variant?: keyof typeof variants;
   icon?: IconName;
-  trailing?: IconName;
   className?: string;
 }) {
-  const cls = `inline-flex min-h-14 items-center justify-center gap-2.5 rounded-2xl px-7 text-[17px] font-semibold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${variants[variant]} ${className}`;
+  const v = variants[variant];
+  const cls = `group inline-flex min-h-13 items-center justify-between gap-4 rounded-full py-2 pr-2 pl-6 text-[17px] font-medium transition-colors ${v.pill} ${className}`;
   const inner = (
     <>
-      {icon && <Icon name={icon} />}
       {children}
-      {trailing && <Icon name={trailing} />}
+      <span className={`flex size-9 shrink-0 items-center justify-center rounded-full transition-transform group-hover:translate-x-0.5 ${v.dot}`}>
+        <Icon name={icon} size={16} strokeWidth={2.25} />
+      </span>
     </>
   );
   // tel:/sms: links must stay plain anchors; internal routes get client navigation.
@@ -45,60 +48,76 @@ export function Button({
   );
 }
 
-export function SectionHeading({
-  eyebrow,
-  title,
-  intro,
-  light = false,
-  center = false,
-  as: H = "h2",
-  className = "",
-}: {
-  eyebrow: string;
-  title: ReactNode;
-  intro?: ReactNode;
-  light?: boolean;
-  center?: boolean;
-  as?: "h1" | "h2";
-  className?: string;
-}) {
+/** Text link with a hooked arrow, as in "↳ Read more". */
+export function MoreLink({ href, children = "Read more", light = false }: { href: string; children?: ReactNode; light?: boolean }) {
   return (
-    <div className={`reveal ${center ? "mx-auto text-center" : ""} ${className}`}>
-      <p
-        className={`inline-flex items-center gap-2.5 text-[15px] font-bold ${light ? "text-brand-soft" : "text-brand"} ${center ? "justify-center" : ""}`}
-      >
-        <span aria-hidden className={`h-[3px] w-6 rounded-full ${light ? "bg-brand-soft" : "bg-brand"}`} />
-        {eyebrow}
-      </p>
-      <H
-        className={`mt-4 font-display text-[30px] leading-[1.12] font-extrabold tracking-tight text-balance sm:text-[44px] ${light ? "text-white" : "text-navy"}`}
-      >
-        {title}
-      </H>
-      {intro && (
-        <p className={`mt-4 text-[17px] leading-relaxed sm:text-[19px] ${light ? "text-[#d5deec]" : "text-ink"}`}>{intro}</p>
-      )}
-    </div>
+    <Link href={href} className={`inline-flex items-center gap-1.5 text-[16px] ${light ? "text-white hover:text-signal" : "text-ink hover:text-brand"}`}>
+      <span aria-hidden="true">↳</span>
+      <span className="underline-offset-4 hover:underline">{children}</span>
+    </Link>
   );
 }
 
 export function Container({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`mx-auto w-full max-w-[1200px] px-5 lg:px-8 xl:px-0 ${className}`}>{children}</div>;
+  return <div className={`mx-auto w-full max-w-[1440px] px-5 sm:px-6 lg:px-8 ${className}`}>{children}</div>;
+}
+
+export function Heading({
+  children,
+  as: H = "h2",
+  light = false,
+  className = "",
+}: {
+  children: ReactNode;
+  as?: "h1" | "h2" | "h3";
+  light?: boolean;
+  className?: string;
+}) {
+  const size =
+    H === "h1"
+      ? "text-[40px] leading-[1.02] sm:text-[52px] lg:text-[60px]"
+      : H === "h2"
+        ? "text-[32px] leading-[1.05] sm:text-[40px] lg:text-[44px]"
+        : "text-[22px] leading-tight";
+  return <H className={`font-display font-normal tracking-[-0.025em] ${light ? "text-white" : "text-ink"} ${size} ${className}`}>{children}</H>;
+}
+
+export function SectionIntro({
+  title,
+  children,
+  light = false,
+  center = false,
+  className = "",
+}: {
+  title: ReactNode;
+  children?: ReactNode;
+  light?: boolean;
+  center?: boolean;
+  className?: string;
+}) {
+  return (
+    <div className={`max-w-[640px] ${center ? "mx-auto text-center" : ""} ${className}`}>
+      <Heading light={light}>{title}</Heading>
+      {children && <div className={`mt-5 text-[18px] leading-relaxed ${light ? "text-on-navy" : "text-ink/80"}`}>{children}</div>}
+    </div>
+  );
 }
 
 export function Breadcrumbs({ items }: { items: { label: string; href?: string }[] }) {
   return (
-    <nav aria-label="Breadcrumb" className="text-sm text-ink">
+    <nav aria-label="Breadcrumb" className="text-[15px] text-muted">
       <ol className="flex flex-wrap items-center gap-2">
         {items.map((item, i) => (
           <li key={item.label} className="flex items-center gap-2">
             {i > 0 && <span aria-hidden>/</span>}
             {item.href ? (
-              <Link href={item.href} className="font-medium text-brand hover:underline">
+              <Link href={item.href} className="hover:text-ink hover:underline">
                 {item.label}
               </Link>
             ) : (
-              <span aria-current="page">{item.label}</span>
+              <span aria-current="page" className="text-ink">
+                {item.label}
+              </span>
             )}
           </li>
         ))}
@@ -107,62 +126,63 @@ export function Breadcrumbs({ items }: { items: { label: string; href?: string }
   );
 }
 
-/** Top-of-page banner for inner pages: breadcrumb, H1, intro, optional photo. */
+export type Photo = { src: string; alt: string; caption?: string };
+
+/** Inner-page header: big regular-weight title on paper, square-cornered photo alongside. */
 export function PageHero({
-  eyebrow,
   title,
   intro,
   crumbs,
   path,
-  image,
+  photo,
   children,
 }: {
-  eyebrow: string;
   title: ReactNode;
   intro: ReactNode;
   crumbs: { label: string; href?: string }[];
   /** This page's path — used for the BreadcrumbList structured data. */
   path: string;
-  image?: { src: string; alt: string };
+  photo?: Photo;
   children?: ReactNode;
 }) {
   return (
-    <section className="relative overflow-hidden bg-mist pt-8 pb-14 lg:pt-12 lg:pb-20">
-      <div aria-hidden className="pointer-events-none absolute -top-40 -right-40 size-[560px] rounded-full bg-[radial-gradient(closest-side,rgb(42_102_204/0.14),transparent)]" />
+    <section className="border-b border-line bg-paper">
       <JsonLd data={breadcrumbLd(crumbs, path)} />
-      <Container className="relative">
-        <Breadcrumbs items={crumbs} />
-        <div className={`mt-8 grid items-center gap-10 ${image ? "lg:grid-cols-[1fr_520px] lg:gap-16" : ""}`}>
-          <div className={image ? "" : "max-w-[820px]"}>
-            <SectionHeading as="h1" eyebrow={eyebrow} title={title} intro={intro} />
-            {children && <div className="mt-8">{children}</div>}
-          </div>
-          {image && (
-            <Image
-              src={image.src}
-              alt={image.alt}
-              width={1536}
-              height={1024}
-              loading="eager"
-              fetchPriority="high"
-              sizes="(min-width: 1024px) 520px, 100vw"
-              className="aspect-[3/2] w-full rounded-3xl object-cover lg:rounded-[32px]"
-            />
-          )}
+      <Container className={`grid gap-10 py-12 lg:py-20 ${photo ? "lg:grid-cols-2 lg:items-end lg:gap-16" : ""}`}>
+        <div className={photo ? "" : "max-w-[820px]"}>
+          <Breadcrumbs items={crumbs} />
+          <Heading as="h1" className="mt-8">
+            {title}
+          </Heading>
+          <div className="mt-6 max-w-[560px] text-[18px] leading-relaxed text-ink/80 sm:text-[19px]">{intro}</div>
+          {children && <div className="mt-9">{children}</div>}
         </div>
+        {photo && (
+          <Image
+            src={photo.src}
+            alt={photo.alt}
+            width={2000}
+            height={1333}
+            loading="eager"
+            fetchPriority="high"
+            quality={90}
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="aspect-[3/2] w-full rounded-[18px] object-cover"
+          />
+        )}
       </Container>
     </section>
   );
 }
 
-export function CallButtons({ light = false, className = "" }: { light?: boolean; className?: string }) {
+export function CallButtons({ className = "" }: { className?: string; onNavy?: boolean }) {
   return (
-    <div className={`flex flex-col gap-3 sm:flex-row sm:gap-4 ${className}`}>
-      <Button href="tel:+64273521635" icon="phone" variant={light ? "white" : "primary"}>
-        Call 027 352 1635
+    <div className={`flex flex-col gap-3 sm:flex-row ${className}`}>
+      <Button href={site.phoneHref} icon="phone">
+        Call {site.phoneDisplay}
       </Button>
-      <Button href="/contact" variant={light ? "primary" : "outline"} icon="calendar">
-        Book a ride
+      <Button href="/contact" variant="outline">
+        Book online
       </Button>
     </div>
   );
@@ -170,20 +190,58 @@ export function CallButtons({ light = false, className = "" }: { light?: boolean
 
 export function Faqs({ items }: { items: { q: string; a: string }[] }) {
   return (
-    <div className="divide-y divide-line rounded-3xl border border-line bg-white">
+    <div className="border-t border-line">
       {items.map((f) => (
-        <details key={f.q} className="group px-6 py-5 transition-colors open:bg-mist/60 hover:bg-mist/60 lg:px-8">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg font-bold text-navy [&::-webkit-details-marker]:hidden">
+        <details key={f.q} className="group border-b border-line">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-[19px] text-ink [&::-webkit-details-marker]:hidden">
             {f.q}
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-sky text-brand transition-transform group-open:rotate-45">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden>
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-ink/5 text-ink transition-transform group-open:rotate-45" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M12 5v14M5 12h14" />
               </svg>
             </span>
           </summary>
-          <p className="mt-3 leading-relaxed text-ink">{f.a}</p>
+          <p className="max-w-[680px] pb-7 text-[17px] leading-relaxed text-ink/80">{f.a}</p>
         </details>
       ))}
     </div>
+  );
+}
+
+/** Closing call-to-action: a solid blue card with the dawn photo on the right. */
+export function ContactBand({
+  title = "Need a ride? We’re a phone call away.",
+  intro = "Call or text with where you’re going and when. Let us know if you use a wheelchair or walker, and we’ll send the right vehicle.",
+}: {
+  title?: string;
+  intro?: string;
+}) {
+  return (
+    <section className="bg-paper py-20 lg:py-28">
+      <Container className="max-w-[1200px]">
+        <div className="grid overflow-hidden rounded-[var(--radius-card)] bg-brand p-3 text-white lg:grid-cols-2">
+          <div className="flex flex-col justify-between gap-10 p-5 sm:p-8 lg:p-10">
+            <div>
+              <h2 className="font-display text-[32px] leading-[1.08] font-normal tracking-[-0.025em] sm:text-[40px]">{title}</h2>
+              <p className="mt-5 max-w-[440px] text-[17px] leading-relaxed text-white/85">{intro}</p>
+            </div>
+            <div>
+              <a href={site.phoneHref} className="block font-display text-[36px] leading-none tracking-[-0.02em] hover:underline sm:text-[44px]">
+                {site.phoneDisplay}
+              </a>
+              <p className="mt-2 text-[15px] text-white/75">Call or text, 7am–7pm, 7 days</p>
+              <div className="mt-7">
+                <Button href="/contact" variant="white">
+                  Send a booking request
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="relative min-h-[280px] overflow-hidden rounded-[8px] bg-navy lg:min-h-[480px]">
+            <Image src={photos.seasideBench.src} alt="" fill sizes="(min-width: 1024px) 590px, 100vw" className="object-cover" />
+          </div>
+        </div>
+      </Container>
+    </section>
   );
 }

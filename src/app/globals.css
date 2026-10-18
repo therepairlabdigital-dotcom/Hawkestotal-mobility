@@ -1,22 +1,30 @@
 @import "tailwindcss";
 
-/* Brand tokens — taken from the official Hawke's Bay Total Mobility logo */
+/*
+  Layout concept (after Legora): editorial and restrained. Off-white paper, near-black ink, one deep
+  solid blue. One typeface at regular weight, set large. Square-cornered photography, hairline rules,
+  pill buttons with a round arrow. Navy-black bands only for the hero, credentials and footer CTA.
+*/
 @theme {
-  --color-navy: #0a1628;
-  --color-brand: #2a66cc;
-  --color-brand-dark: #1f52a8;
-  --color-brand-soft: #8db4f0;
-  --color-sky: #eaf1fc;
-  --color-mist: #f4f7fc;
-  --color-ink: #2b3445;
-  --color-deep: #060f1d;
-  --color-line: #e3e9f3;
+  --color-paper: #fafaf9; /* page background */
+  --color-stone: #e4e3df; /* quiet feature band */
+  --color-navy: #0d1016; /* near-black: dark bands */
+  --color-navy-2: #1b1e25; /* raised surface on black */
+  --color-brand: #0f3ea8; /* deep solid blue: buttons, links, CTA card */
+  --color-brand-dark: #0a2f84;
+  --color-brand-soft: #a9bdf2;
+  --color-signal: #a9bdf2; /* light blue for small highlights on black */
+  --color-ink: #0d1016; /* headings and body */
+  --color-muted: #5f636b; /* secondary text */
+  --color-tint: #f1f0ed; /* subtle section tint */
+  --color-line: #dcdad5; /* hairlines */
+  --color-on-navy: #b4b7bd; /* secondary text on black */
 
-  --font-sans: var(--font-body);
-  --font-display: var(--font-montserrat);
+  --font-sans: var(--font-display-face), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-face), ui-sans-serif, system-ui, sans-serif;
 
-  --shadow-card: 0 8px 28px rgb(6 38 74 / 0.08);
-  --shadow-float: 0 16px 40px rgb(6 38 74 / 0.16);
+  --radius-card: 12px;
+  --shadow-card: 0 1px 2px rgb(13 16 22 / 0.05), 0 8px 24px rgb(13 16 22 / 0.06);
 }
 
 html {
@@ -24,7 +32,7 @@ html {
 }
 
 body {
-  background: #fff;
+  background: var(--color-paper);
   color: var(--color-ink);
 }
 
@@ -33,54 +41,80 @@ body {
   outline-offset: 3px;
 }
 
+/* Hide Next.js developer tools badge and indicators across previews and builds */
+nextjs-portal,
+[data-nextjs-toast],
+[data-nextjs-dialog-overlay],
+div[data-nextjs-dev-tools],
+#nextjs-dev-tools-wrapper,
+nextjs-dev-tools,
+[data-next-dev-tools],
+[data-nextjs-dev-indicator] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* One card style for every repeated item: white surface, hairline border, soft shadow, rounded corners. */
+@layer components {
+  .card {
+    border-radius: 18px;
+    border: 1px solid var(--color-line);
+    background: #fff;
+    box-shadow:
+      0 1px 2px rgb(13 16 22 / 0.04),
+      0 6px 20px rgb(13 16 22 / 0.05);
+  }
+
+  .card-link {
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease,
+      border-color 0.25s ease;
+  }
+
+  .card-link:hover {
+    transform: translateY(-4px);
+    border-color: rgb(15 62 168 / 0.25);
+    box-shadow:
+      0 2px 4px rgb(13 16 22 / 0.05),
+      0 18px 40px rgb(13 16 22 / 0.1);
+  }
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
 p {
   text-wrap: pretty;
 }
 
-/* Sections fade up as they scroll into view. CSS-only, progressive:
-   browsers without scroll-driven animations just show the content. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .reveal {
-      animation: reveal linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 38%;
-    }
+/* One orchestrated moment: the home hero rises in on load. Elements rest fully visible. */
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
 }
 
-@keyframes reveal {
+@keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(28px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
+    transform: translateY(18px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {
     transition-duration: 0.01ms !important;
   }
 }
-
-/* KiwiTechLabs design credit: local logo, readable type and keyboard focus. */
-a.kiwitech-credit {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  max-width: 100%;
-  color: inherit;
-  font-size: 12px;
-  line-height: 1.5;
-  text-decoration: none;
-}
-a.kiwitech-credit img { flex: 0 0 40px; width: 40px; height: 40px; object-fit: contain; }
-a.kiwitech-credit strong { font-weight: 600; }
-a.kiwitech-credit:hover strong { text-decoration: underline; text-underline-offset: 3px; }
-a.kiwitech-credit:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 4px; }

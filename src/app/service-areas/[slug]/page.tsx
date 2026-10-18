@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/icons";
-import { CtaBand, HowItWorks, ServiceGrid } from "@/components/sections";
-import { CallButtons, Container, Faqs, PageHero, SectionHeading } from "@/components/ui";
+import { PhoneLine, ServiceCards, TripSteps } from "@/components/sections";
+import { CallButtons, ContactBand, Container, Faqs, PageHero, SectionIntro } from "@/components/ui";
 import { abs, businessId, JsonLd, pageMeta } from "@/lib/seo";
-import { areaPages } from "@/lib/site";
+import { areaPages, photos } from "@/lib/site";
 
 export const dynamicParams = false;
 
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: PageProps<"/service-areas/[sl
     title: a.metaTitle,
     description: a.metaDescription,
     path: `/service-areas/${a.slug}`,
-    image: `/images/${a.img}.jpg`,
+    image: photos[a.photo].src,
   });
 }
 
@@ -45,70 +46,90 @@ export default async function AreaPage({ params }: PageProps<"/service-areas/[sl
           areaServed: { "@type": "City", name: a.name },
         }}
       />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: a.faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+        }}
+      />
       <PageHero
-        eyebrow={`Service area · ${a.name}`}
-        title={`Accessible transport in ${a.name}.`}
-        intro={a.intro}
-        crumbs={[{ label: "Home", href: "/" }, { label: "Service Areas", href: "/service-areas" }, { label: a.name }]}
+        title={`Wheelchair transport in ${a.name}.`}
+        intro={<p>{a.intro}</p>}
+        crumbs={[{ label: "Home", href: "/" }, { label: "Areas", href: "/service-areas" }, { label: a.name }]}
         path={path}
-        image={{ src: `/images/${a.img}.jpg`, alt: a.imgAlt }}
+        photo={photos[a.photo]}
       >
         <CallButtons />
       </PageHero>
 
-      <section className="bg-white py-14 lg:py-24">
+      <section className="bg-white py-20 lg:py-28">
         <Container>
-          <SectionHeading eyebrow={`Popular trips in ${a.name}`} title="Where we take people." className="max-w-[760px]" />
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:gap-6">
+          <SectionIntro title={`Trips we often do around ${a.name}.`} />
+          <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {a.trips.map((t) => (
-              <li key={t.title} className="flex gap-4 rounded-3xl bg-mist p-6 lg:p-8">
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-brand text-white">
-                  <Icon name="pin" size={20} />
+              <li key={t.title} className="card p-7">
+                <span className="flex size-11 items-center justify-center rounded-full bg-ink/5 text-ink">
+                  <Icon name="pin" size={22} />
                 </span>
-                <div>
-                  <h3 className="font-display text-xl font-bold text-navy">{t.title}</h3>
-                  <p className="mt-2 text-[17px] leading-relaxed">{t.body}</p>
-                </div>
+                <h3 className="mt-5 font-display text-[22px] font-normal tracking-[-0.02em] text-ink">{t.title}</h3>
+                <p className="mt-2.5 text-[17px] leading-relaxed text-muted">{t.body}</p>
               </li>
             ))}
           </ul>
-          <p className="mt-10 max-w-[860px] text-[17px] leading-relaxed lg:text-[19px]">{a.local}</p>
+          <div className="mt-6 rounded-[var(--radius-card)] bg-navy p-7 text-[18px] leading-relaxed text-on-navy lg:p-9">
+            <p className="max-w-[860px]">
+              <strong className="text-white">Local knowledge. </strong>
+              {a.local}
+            </p>
+          </div>
         </Container>
       </section>
 
-      <section className="bg-mist py-14 lg:py-24">
-        <Container className="grid gap-10 lg:grid-cols-[400px_1fr] lg:gap-16">
+      <section className="bg-tint py-20 lg:py-28">
+        <Container className="grid gap-10 lg:grid-cols-[360px_1fr] lg:gap-16">
           <div>
-            <SectionHeading eyebrow="Questions" title={`${a.name} FAQs.`} />
-            <p className="mt-6 font-semibold text-navy">Other areas we cover</p>
-            <ul className="mt-3 flex flex-wrap gap-2">
-              {others.map((o) => (
-                <li key={o.slug}>
-                  <Link
-                    href={`/service-areas/${o.slug}`}
-                    className="inline-block rounded-full bg-white px-4 py-2 font-medium text-brand ring-1 ring-line hover:ring-brand"
-                  >
-                    {o.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <SectionIntro title={`${a.name} FAQs.`} />
+            <div className="mt-5">
+              <PhoneLine />
+            </div>
           </div>
           <Faqs items={a.faqs} />
         </Container>
       </section>
 
-      <section className="bg-white py-14 lg:py-24">
+      <section className="bg-white py-20 lg:py-28">
         <Container>
-          <SectionHeading eyebrow="Our services" title={`What we can help with in ${a.name}.`} />
+          <SectionIntro title={`What we do in ${a.name}.`} />
           <div className="mt-10">
-            <ServiceGrid />
+            <ServiceCards />
           </div>
         </Container>
       </section>
 
-      <HowItWorks />
-      <CtaBand />
+      <TripSteps bg="bg-tint" />
+
+      <section className="bg-white pt-20 lg:pt-28">
+        <Container>
+          <SectionIntro title="Other areas we cover." />
+          <ul className="mt-10 grid gap-5 sm:grid-cols-3">
+            {others.map((o) => (
+              <li key={o.slug}>
+                <Link
+                  href={`/service-areas/${o.slug}`}
+                  className="group flex items-center gap-4 overflow-hidden rounded-[var(--radius-card)] border border-line bg-white pr-5 transition-shadow hover:shadow-[var(--shadow-card)]"
+                >
+                  <Image src={photos[o.photo].src} alt="" width={240} height={240} sizes="96px" className="size-24 shrink-0 object-cover" />
+                  <span className="flex-1 font-display text-[22px] font-normal tracking-[-0.02em] text-ink">{o.name}</span>
+                  <Icon name="arrow" size={18} className="text-brand transition-transform group-hover:translate-x-1" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </section>
+
+      <ContactBand />
     </>
   );
 }
