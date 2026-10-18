@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import localFont from "next/font/local";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { MobileCallBar } from "@/components/MobileCallBar";
@@ -8,7 +8,13 @@ import { services, site } from "@/lib/site";
 import "./globals.css";
 
 // One family for everything, like a print identity. Regular weight for headings, medium for UI.
-const display = Geist({ variable: "--font-display-face", subsets: ["latin"], weight: ["400", "500", "600"] });
+const display = localFont({
+  src: "../../public/fonts/geist-variable.woff2",
+  variable: "--font-display-face",
+  weight: "100 900",
+  style: "normal",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),

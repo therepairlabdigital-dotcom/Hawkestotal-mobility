@@ -18,7 +18,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses `next/font/local` to optimize and preload the bundled Geist variable font in `public/fonts/geist-variable.woff2`. Builds do not fetch fonts from Google. The unmodified font comes from [vercel/geist-font](https://github.com/vercel/geist-font/blob/e1f671c727f6de7e97c1e1d26dbb44f349c19459/fonts/Geist/webfonts/Geist%5Bwght%5D.woff2) and is distributed under the SIL Open Font License in `public/fonts/OFL.txt`.
 
 ## Learn More
 
