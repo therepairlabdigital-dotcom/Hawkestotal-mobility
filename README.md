@@ -16,6 +16,14 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Hostinger production build
+
+Use Node.js 24, `npm install`, `npm run build`, and the default `.next` output directory.
+The production build explicitly uses Webpack to avoid a Turbopack PostCSS worker
+startup failure in Hostinger's build environment. Keep the `--webpack` flag in the
+build script. The `allowScripts` entry in `package.json` approves the pinned
+`unrs-resolver` native binding setup for npm versions that require script approval.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses `next/font/local` to optimize and preload the bundled Geist variable font in `public/fonts/geist-variable.woff2`. Builds do not fetch fonts from Google. The unmodified font comes from [vercel/geist-font](https://github.com/vercel/geist-font/blob/e1f671c727f6de7e97c1e1d26dbb44f349c19459/fonts/Geist/webfonts/Geist%5Bwght%5D.woff2) and is distributed under the SIL Open Font License in `public/fonts/OFL.txt`.
